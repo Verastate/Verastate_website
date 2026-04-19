@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://verastate.co.za/sitemap.xml
