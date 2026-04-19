@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verastate — Where Agents Connect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <style>
+    :root {
+      --blue: #004370;
+      --blue-mid: #0060A8;
+      --blue-light: #0098f2;
+      --blue-subtle: #E8F4FD;
+      --gold: #C9A52A;
+      --gold-subtle: #FDF6E3;
+      --charcoal: #1C1F2E;
+      --muted: #666;
+      --border: #E8E8E8;
+      --bg: #FAFAFA;
+      --green: #5d9c06;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--charcoal); -webkit-font-smoothing: antialiased; }
+    h1,h2,h3,h4,.display { font-family: 'DM Sans', sans-serif; }
+
+    /* NAV */
+    .nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1.5px solid var(--gold); height: 52px; display: flex; align-items: center; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 24px; display: flex; align-items: center; gap: 0; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; margin-right: 32px; }
+    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-logo-text { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 16px; color: var(--charcoal); letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 2px; flex: 1; }
+    .nav-link { font-size: 14px; font-weight: 400; color: #444; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: background 0.15s, color 0.15s; }
+    .nav-link:hover { background: #F3F4F6; color: var(--charcoal); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-ghost-nav { font-size: 14px; font-weight: 500; color: var(--charcoal); text-decoration: none; padding: 7px 14px; border-radius: 6px; transition: background 0.15s; }
+    .btn-ghost-nav:hover { background: #F3F4F6; }
+    .btn-nav-primary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: #fff; background: var(--blue); text-decoration: none; padding: 7px 16px; border-radius: 6px; transition: background 0.15s, transform 0.1s; border: none; cursor: pointer; }
+    .btn-nav-primary:hover { background: #003360; transform: translateY(-1px); }
+    .btn-nav-primary:active { transform: translateY(0); }
+
+    /* LAYOUT */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* HERO */
+    .hero { padding: 80px 0 72px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .hero-label { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--blue-light); background: var(--blue-subtle); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .hero h1 { font-size: 54px; font-weight: 700; line-height: 1.07; letter-spacing: -0.035em; color: var(--charcoal); margin-bottom: 20px; }
+    .hero-sub { font-size: 17px; line-height: 1.65; color: var(--muted); margin-bottom: 32px; max-width: 560px; }
+    .hero-ctas { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 28px; }
+    .btn-primary-lg { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: #fff; background: var(--blue); text-decoration: none; padding: 11px 24px; border-radius: 8px; transition: background 0.15s, transform 0.1s; border: none; cursor: pointer; display: inline-block; }
+    .btn-primary-lg:hover { background: #003360; transform: translateY(-1px); }
+    .btn-outline-lg { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: var(--charcoal); background: transparent; text-decoration: none; padding: 11px 24px; border-radius: 8px; border: 1px solid var(--border); transition: border-color 0.15s, background 0.15s; display: inline-block; }
+    .btn-outline-lg:hover { border-color: #aaa; background: #F9F9F9; }
+    .hero-proof { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; color: #888; }
+    .stars { color: var(--gold); font-size: 14px; letter-spacing: 1px; }
+    .hero-email-form { display: flex; gap: 10px; justify-content: center; max-width: 480px; margin: 0 auto; }
+    .hero-email-input { flex: 1; font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--charcoal); background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 18px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; min-width: 0; }
+    .hero-email-input::placeholder { color: #aaa; }
+    .hero-email-input:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(0,96,168,0.1); }
+    .hero-email-success { display: none; align-items: center; justify-content: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--charcoal); }
+    .hero-email-success svg { color: var(--green); flex-shrink: 0; }
+    .hero-email-success.visible { display: flex; }
+    .hero-email-form.hidden { display: none; }
+    @media (max-width: 520px) { .hero-email-form { flex-direction: column; } .hero-email-form .email-btn { width: 100%; } }
+
+    /* HERO MOCKUP */
+    .hero-visual { position: relative; overflow: visible; }
+    .mockup-wrap { background: #fff; border-radius: 16px; border: 1px solid #E0E0E0; box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 24px 48px rgba(0,0,0,0.09); padding: 18px; }
+    .mockup-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #F0F0F0; }
+    .mockup-logo-row { display: flex; align-items: center; gap: 7px; }
+    .mockup-logo-row img { width: 20px; height: 20px; border-radius: 4px; }
+    .mockup-logo-row span { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 13px; color: var(--charcoal); }
+    .mockup-nav-dots { display: flex; gap: 5px; }
+    .mockup-dot { width: 22px; height: 22px; border-radius: 5px; background: #F3F4F6; }
+
+    /* AGENT CARD IN MOCKUP */
+    .agent-card { border: 1px solid #EFEFEF; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+    .agent-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #0098f2, #004370); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .avatar.gold { background: linear-gradient(135deg, #C9A52A, #E8C65A); }
+    .agent-name { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--charcoal); }
+    .agent-meta { font-size: 11px; color: #888; margin-top: 1px; }
+    .badge-verified { margin-left: auto; background: #EBF8EE; color: var(--green); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; flex-shrink: 0; }
+    .agent-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
+    .stat-cell { background: #F9FAFB; border-radius: 7px; padding: 9px 8px; text-align: center; }
+    .stat-val { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; color: var(--charcoal); }
+    .stat-lbl { font-size: 9px; color: #999; margin-top: 2px; }
+
+    /* INSIGHT STRIP IN MOCKUP */
+    .insight-strip { background: linear-gradient(135deg, #004370 0%, #0060A8 100%); border-radius: 9px; padding: 13px 14px; color: #fff; margin-top: 10px; }
+    .insight-eyebrow { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.55; margin-bottom: 5px; }
+    .insight-city { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .insight-row { display: flex; align-items: center; gap: 10px; }
+    .insight-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
+    .insight-item .label { font-size: 10px; opacity: 0.55; }
+    .insight-item .value { font-weight: 600; font-size: 13px; margin-top: 2px; }
+    .trend-pill { margin-left: auto; background: rgba(93,156,6,0.3); border-radius: 20px; padding: 3px 8px; font-size: 10px; font-weight: 600; color: #A3E070; }
+
+    /* FLOATING NOTIF */
+    .notif { position: absolute; bottom: -18px; left: -28px; background: #fff; border-radius: 12px; border: 1px solid #E8E8E8; box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 11px 14px; display: flex; align-items: center; gap: 9px; min-width: 210px; }
+    .notif-icon { width: 30px; height: 30px; border-radius: 7px; background: #EBF8EE; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .notif-title { font-size: 11px; font-weight: 600; color: var(--charcoal); display: block; }
+    .notif-sub { font-size: 10px; color: #888; }
+
+    /* TRUST BAR */
+    .trust-bar { border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); background: #fff; padding: 22px 0; text-align: center; font-size: 14px; color: #888; }
+    .trust-bar strong { color: var(--charcoal); font-weight: 600; }
+
+    /* FEATURE SECTIONS */
+    .feature-sec { padding: 96px 0; }
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .feature-grid.flip { direction: rtl; }
+    .feature-grid.flip > * { direction: ltr; }
+    .f-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--blue-light); margin-bottom: 12px; }
+    .f-heading { font-size: 38px; font-weight: 700; line-height: 1.14; letter-spacing: -0.025em; color: var(--charcoal); margin-bottom: 16px; }
+    .f-body { font-size: 16px; line-height: 1.7; color: var(--muted); margin-bottom: 24px; }
+    .f-list { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 24px; }
+    .f-list li { display: flex; align-items: flex-start; gap: 9px; font-size: 15px; color: var(--muted); line-height: 1.55; }
+    .chk { width: 17px; height: 17px; background: #EBF8EE; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px; }
+    .chk svg { width: 9px; height: 9px; }
+    .f-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--blue); text-decoration: none; transition: gap 0.15s; }
+    .f-link:hover { gap: 10px; }
+
+    /* DARK SECTION */
+    .dark-sec { background: var(--charcoal); padding: 96px 0; }
+    .dark-sec h2 { color: #fff; font-size: 42px; font-weight: 700; line-height: 1.14; letter-spacing: -0.025em; margin-bottom: 16px; max-width: 620px; }
+    .dark-sec .intro { color: rgba(255,255,255,0.55); font-size: 17px; line-height: 1.65; max-width: 520px; }
+    .pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 48px; }
+    .pain-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px; }
+    .pain-icon { font-size: 24px; margin-bottom: 14px; }
+    .pain-card h4 { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .pain-card p { font-size: 14px; color: rgba(255,255,255,0.48); line-height: 1.6; }
+
+    /* UI MOCKUP SHELL */
+    .ui-shell { background: #fff; border-radius: 16px; border: 1px solid #E0E0E0; box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 40px rgba(0,0,0,0.08); overflow: hidden; }
+    .ui-topbar { background: #F9FAFB; border-bottom: 1px solid #EEEEEE; padding: 10px 16px; display: flex; align-items: center; gap: 5px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .d-r { background: #FF6363; } .d-y { background: #C9A52A; } .d-g { background: #5d9c06; }
+    .ui-body { padding: 20px; }
+
+    /* CHART */
+    .chart-wrap { background: #fff; border-radius: 16px; border: 1px solid #E0E0E0; box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 40px rgba(0,0,0,0.08); padding: 20px; }
+    .chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .chart-title { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--charcoal); }
+    .chart-period { font-size: 11px; color: #888; background: #F3F4F6; padding: 4px 10px; border-radius: 20px; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 110px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; height: 100%; }
+    .bar-fill { width: 100%; border-radius: 4px 4px 0 0; }
+    .bar-lbl { font-size: 10px; color: #999; }
+    .chart-foot { display: flex; align-items: center; gap: 16px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #F0F0F0; }
+    .cf-val { font-family: 'DM Sans', sans-serif; font-size: 21px; font-weight: 700; color: var(--charcoal); }
+    .cf-lbl { font-size: 11px; color: #888; margin-top: 2px; }
+    .trend-up { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; color: var(--green); background: #EBF8EE; padding: 3px 9px; border-radius: 20px; }
+    .area-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 9px; margin-top: 14px; }
+    .area-cell { padding: 11px; background: #F9FAFB; border-radius: 8px; }
+    .area-name { font-size: 10px; color: #888; margin-bottom: 3px; }
+    .area-val { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px; color: var(--charcoal); }
+    .area-trend { font-size: 10px; color: var(--green); margin-top: 2px; }
+
+    /* CTA BOX */
+    .cta-wrap { padding: 80px 0; }
+    .cta-box { background: var(--blue); border-radius: 20px; padding: 64px 48px; text-align: center; position: relative; overflow: hidden; }
+    .cta-box::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 80% 30%, rgba(0,152,242,0.3), transparent); pointer-events: none; }
+    .cta-box h2 { font-size: 40px; font-weight: 700; color: #fff; letter-spacing: -0.025em; margin-bottom: 12px; position: relative; }
+    .cta-box p { font-size: 17px; color: rgba(255,255,255,0.65); margin-bottom: 32px; position: relative; }
+    .cta-btns { display: flex; justify-content: center; gap: 12px; position: relative; }
+    .btn-white { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: var(--blue); background: #fff; text-decoration: none; padding: 11px 24px; border-radius: 8px; transition: background 0.15s, transform 0.1s; border: none; cursor: pointer; display: inline-block; }
+    .btn-white:hover { background: #F0F0F0; transform: translateY(-1px); }
+    .btn-white-ghost { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: #fff; background: transparent; text-decoration: none; padding: 11px 24px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); transition: border-color 0.15s, background 0.15s; display: inline-block; }
+    .btn-white-ghost:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.06); }
+
+    /* EMAIL CAPTURE */
+    .email-form { display: flex; gap: 10px; justify-content: center; position: relative; max-width: 500px; margin: 0 auto; }
+    .email-input { flex: 1; font-family: 'DM Sans', sans-serif; font-size: 15px; color: #fff; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.22); border-radius: 10px; padding: 12px 18px; outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; min-width: 0; }
+    .email-input::placeholder { color: rgba(255,255,255,0.45); }
+    .email-input:focus { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.15); box-shadow: 0 0 0 3px rgba(255,255,255,0.08); }
+    .email-btn { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; color: #1C1F2E; background: var(--gold); border: none; border-radius: 10px; padding: 12px 24px; cursor: pointer; white-space: nowrap; transition: background 0.15s, transform 0.1s, box-shadow 0.15s; }
+    .email-btn:hover { background: #D9B030; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,165,42,0.35); }
+    .email-btn:active { transform: translateY(0); }
+    .email-disclaimer { margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.4); position: relative; }
+    .email-success { display: none; align-items: center; justify-content: center; gap: 10px; color: #fff; font-size: 16px; font-weight: 500; }
+    .email-success svg { color: var(--gold); flex-shrink: 0; }
+    .email-success.visible { display: flex; }
+    .email-form.hidden { display: none; }
+    @media (max-width: 560px) { .email-form { flex-direction: column; } .email-btn { width: 100%; } }
+
+    /* FAQ */
+    .faq-wrap { max-width: 720px; margin: 0 auto; padding: 96px 24px; }
+    .faq-title { font-size: 36px; font-weight: 700; letter-spacing: -0.025em; text-align: center; color: var(--charcoal); margin-bottom: 48px; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q { width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 20px 0; display: flex; align-items: center; justify-content: space-between; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500; color: var(--charcoal); transition: color 0.15s; }
+    .faq-q:hover { color: var(--blue); }
+    .faq-icon { width: 20px; height: 20px; border-radius: 50%; background: #F3F4F6; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #666; flex-shrink: 0; transition: background 0.15s, transform 0.2s; }
+    .faq-a { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
+    .faq-a p { font-size: 15px; line-height: 1.7; color: var(--muted); padding-bottom: 20px; }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--blue-subtle); }
+
+    /* FOOTER */
+    footer { background: var(--charcoal); padding: 48px 0 32px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr repeat(4,1fr); gap: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .footer-brand-desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.7; margin-top: 12px; max-width: 240px; }
+    .footer-logo-row { display: flex; align-items: center; gap: 8px; }
+    .footer-logo-row img { width: 24px; height: 24px; border-radius: 5px; }
+    .footer-logo-row span { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 14px; color: #fff; }
+    .footer-col h5 { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 14px; }
+    .footer-col a { display: block; font-size: 14px; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; transition: color 0.15s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { padding-top: 24px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.28); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .fu { animation: fadeUp 0.55s ease both; }
+    .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; } .d3 { animation-delay: 0.24s; } .d4 { animation-delay: 0.34s; }
+
+    /* BRAND FEATURE STRIP */
+    .bg-white-strip { background: #fff; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); }
+
+    /* INTEGRATION BAR */
+    .integ-bar { background: #fff; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); padding: 48px 0 52px; }
+    .integ-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--blue-light); text-align: center; margin-bottom: 10px; }
+    .integ-heading { font-family: 'DM Sans', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: var(--charcoal); text-align: center; margin-bottom: 8px; }
+    .integ-sub { font-size: 15px; line-height: 1.65; color: var(--muted); text-align: center; max-width: 560px; margin: 0 auto 36px; }
+    .integ-logos { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .integ-pill { display: inline-flex; align-items: center; gap: 7px; background: #F9FAFB; border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--charcoal); transition: border-color 0.15s, box-shadow 0.15s; cursor: default; }
+    .integ-pill:hover { border-color: #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .integ-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .integ-stat { display: flex; align-items: center; justify-content: center; gap: 32px; padding-top: 28px; border-top: 1px solid var(--border); }
+    .integ-stat-item { text-align: center; }
+    .integ-stat-val { font-size: 22px; font-weight: 700; color: var(--charcoal); letter-spacing: -0.02em; }
+    .integ-stat-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="brand_assets/Verastate_logo.png.png" alt="Verastate">
+      <span class="nav-logo-text">Verastate</span>
+    </a>
+    <div class="nav-links">
+      <a href="resources.html" class="nav-link">Resources</a>
+      <a href="about.html" class="nav-link">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="signup.html" class="btn-ghost-nav">Sign up</a>
+      <a href="contact.html" class="btn-nav-primary">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="wrap">
+  <div class="hero">
+    <!-- LEFT -->
+    <div style="display:flex;flex-direction:column;align-items:center;max-width:680px;width:100%;">
+      <div class="hero-label fu">
+        <svg width="7" height="7" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Professional network · Real estate
+      </div>
+      <h1 class="fu d1">The Professional Real Estate Network</h1>
+      <p class="hero-sub fu d2">Connect with buyers, sellers, brands and brokerages — all from a single verified agent profile built to grow your real estate agency.</p>
+      <div class="hero-ctas fu d3">
+        <form class="hero-email-form" id="heroEmailForm" onsubmit="handleHeroEmailSubmit(event)">
+          <input class="hero-email-input" id="heroEmailInput" type="email" placeholder="Enter your email address" required autocomplete="email" />
+          <button class="email-btn" type="submit">Get Early Access</button>
+        </form>
+        <div class="hero-email-success" id="heroEmailSuccess">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="rgba(93,156,6,0.12)"/><path d="M6 10.5l2.5 2.5 5.5-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          You're on the list — we'll be in touch soon.
+        </div>
+      </div>
+      <div class="hero-proof fu d4">
+        <span class="stars">★★★★★</span>
+        <span>Trusted by <strong style="color:var(--charcoal);font-weight:600;">4,200+ agents</strong> across South Africa &amp; the United States</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ INTEGRATION BAR ═══ -->
+<div class="integ-bar">
+  <div class="wrap">
+    <div class="integ-eyebrow">Integrations</div>
+    <h3 class="integ-heading">Connect Buyers and Sellers From Around the World</h3>
+    <p class="integ-sub">Verastate integrates with the platforms you already use — syncing listings, leads and conversations across every major portal and tool, whether you're in Cape Town or Chicago.</p>
+    <div class="integ-logos">
+      <div class="integ-pill"><div class="integ-icon" style="background:#E8F1FA;color:#1961C3;">P</div>Property24</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#FFF3E0;color:#E65100;">P</div>Private Property</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#E3F2FD;color:#006AFF;">Z</div>Zillow</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#E8F5E9;color:#D32400;">R</div>Realtor.com</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#E8F5E9;color:#25D366;font-weight:700;">W</div>WhatsApp</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#FDE8F0;color:#E1306C;">IG</div>Instagram</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#E8F0FE;color:#0077B5;">in</div>LinkedIn</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#F3E8FF;color:#4A154B;">S</div>Slack</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#E8F4FD;color:#004370;">B</div>BetterBond</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#FFF8E1;color:#F57F17;">D</div>DocuSign</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#E3F2FD;color:#1A73E8;">G</div>Google Maps</div>
+      <div class="integ-pill"><div class="integ-icon" style="background:#F5F5F5;color:#00A4EF;">M</div>MLS Connect</div>
+    </div>
+    <div class="integ-stat">
+      <div class="integ-stat-item"><div class="integ-stat-val">12+</div><div class="integ-stat-lbl">Platform integrations</div></div>
+      <div style="width:1px;height:32px;background:var(--border);"></div>
+      <div class="integ-stat-item"><div class="integ-stat-val">500+</div><div class="integ-stat-lbl">Sign Ups</div></div>
+      <div style="width:1px;height:32px;background:var(--border);"></div>
+      <div class="integ-stat-item"><div class="integ-stat-val">Global</div><div class="integ-stat-lbl">Buyer &amp; seller reach</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DARK: Pain Points ═══ -->
+<div class="dark-sec">
+  <div class="wrap">
+    <h2>Traditional Agent Directories Are Slow, Expensive and Constantly Out of Date</h2>
+    <p class="intro">Agents deserve better than stale profiles and generic portals. Verastate was built from the ground up for the modern real estate professional.</p>
+    <div class="pain-grid">
+      <div class="pain-card"><div class="pain-icon">📂</div><h4>Static, Outdated Profiles</h4><p>Most platforms show stale data. Your listings close, but your profile never catches up.</p></div>
+      <div class="pain-card"><div class="pain-icon">💸</div><h4>Expensive Lead Subscriptions</h4><p>Pay-per-lead models drain your budget. Build lasting connections instead of renting attention.</p></div>
+      <div class="pain-card"><div class="pain-icon">🔗</div><h4>No Professional Network</h4><p>LinkedIn wasn't built for property. Neither were portals. Verastate fills that gap.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FEATURE 1: Market Insights ═══ -->
+<div style="background:#fff; border-bottom: 1px solid var(--gold);">
+<div class="wrap">
+  <div class="feature-sec">
+    <div class="feature-grid">
+      <!-- Text -->
+      <div>
+        <div class="f-eyebrow">Market Insights</div>
+        <h2 class="f-heading">Know Your Market Before You Make Your Move</h2>
+        <p class="f-body">Real-time price trends, transaction volumes and area comparisons — all in one dashboard. Walk into every conversation knowing more than anyone in the room.</p>
+        <ul class="f-list">
+          <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Live area price trends &amp; 30-day volume</li>
+          <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Compare performance across suburbs</li>
+          <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Share insights directly with clients</li>
+        </ul>
+        <a href="#" class="f-link">Explore market insights →</a>
+      </div>
+      <!-- Chart visual -->
+      <div>
+        <div class="ui-shell">
+          <div class="ui-topbar"><div class="dot d-r"></div><div class="dot d-y"></div><div class="dot d-g"></div></div>
+          <div class="ui-body">
+          <div class="chart-head">
+            <div class="chart-title">Cape Town — Median Sale Price</div>
+            <div class="chart-period">Last 6 months</div>
+          </div>
+          <div class="chart-bars">
+            <div class="bar-col"><div class="bar-fill" style="height:62%;background:linear-gradient(to top,#004370,#0098f2);opacity:0.4;"></div><div class="bar-lbl">Nov</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:70%;background:linear-gradient(to top,#004370,#0098f2);opacity:0.5;"></div><div class="bar-lbl">Dec</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:66%;background:linear-gradient(to top,#004370,#0098f2);opacity:0.56;"></div><div class="bar-lbl">Jan</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:78%;background:linear-gradient(to top,#004370,#0098f2);opacity:0.66;"></div><div class="bar-lbl">Feb</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:84%;background:linear-gradient(to top,#004370,#0098f2);opacity:0.8;"></div><div class="bar-lbl">Mar</div></div>
+            <div class="bar-col"><div class="bar-fill" style="height:100%;background:linear-gradient(to top,#004370,#0098f2);"></div><div class="bar-lbl">Apr</div></div>
+          </div>
+          <div class="chart-foot">
+            <div><div class="cf-val">R 4.8M</div><div class="cf-lbl">Median price, Apr</div></div>
+            <div class="trend-up">▲ 6.4% from Nov</div>
+            <div style="margin-left:auto;"><div class="cf-val">248</div><div class="cf-lbl">Sales this month</div></div>
+          </div>
+          <div class="area-grid">
+            <div class="area-cell"><div class="area-name">Camps Bay</div><div class="area-val">R 9.2M</div><div class="area-trend">▲ 4.1%</div></div>
+            <div class="area-cell"><div class="area-name">Rondebosch</div><div class="area-val">R 2.4M</div><div class="area-trend">▲ 2.8%</div></div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FEATURE 2: Agent Profiles ═══ -->
+<div class="wrap">
+  <div class="feature-sec">
+    <div class="feature-grid flip">
+      <!-- Text -->
+      <div>
+        <div class="f-eyebrow">Agent Profiles</div>
+        <h2 class="f-heading">Your Profile Should Work as Hard as You Do</h2>
+        <p class="f-body">A single verified profile that showcases your listings, transaction history, specializations and client reviews — automatically kept up to date as you close deals.</p>
+        <ul class="f-list">
+          <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Verified deal history and transaction stats</li>
+          <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Direct messaging with buyers, sellers &amp; brands</li>
+          <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Portfolio of active and sold listings</li>
+        </ul>
+        <a href="#" class="f-link">Create your profile →</a>
+      </div>
+      <!-- Visual -->
+      <div>
+        <div class="ui-shell" style="overflow:hidden;">
+          <div class="ui-topbar"><div class="dot d-r"></div><div class="dot d-y"></div><div class="dot d-g"></div></div>
+
+          <div class="ui-body">
+            <!-- Avatar row -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;margin-bottom:14px;padding:0 2px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0098f2,#004370);border:3px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,67,112,0.25);">JD</div>
+                <div>
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <span style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;color:var(--charcoal);">Jordan Davies</span>
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="6.5" fill="#0098f2"/><path d="M3.5 6.5l2 2 4-4" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div style="font-size:10.5px;color:#888;margin-top:1px;">Senior Agent · Cape Town</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:5px;">
+                <button style="font-size:10px;font-weight:600;background:var(--blue);color:#fff;border:none;padding:5px 12px;border-radius:6px;cursor:pointer;">Message</button>
+              </div>
+            </div>
+
+            <!-- Specializations -->
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;">
+              <span style="font-size:9.5px;font-weight:500;color:var(--blue);background:var(--blue-subtle);padding:3px 9px;border-radius:20px;">Luxury</span>
+              <span style="font-size:9.5px;font-weight:500;color:var(--blue);background:var(--blue-subtle);padding:3px 9px;border-radius:20px;">Clifton</span>
+              <span style="font-size:9.5px;font-weight:500;color:var(--blue);background:var(--blue-subtle);padding:3px 9px;border-radius:20px;">Waterfront</span>
+              <span style="font-size:9.5px;font-weight:500;color:#888;background:#F3F4F6;padding:3px 9px;border-radius:20px;">8 yrs exp</span>
+            </div>
+
+            <!-- Stats row -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:16px;">
+              <div style="text-align:center;padding:9px 4px;background:#F9FAFB;border-radius:8px;border:1px solid #F0F0F0;">
+                <div style="font-family:'DM Sans',sans-serif;font-weight:800;font-size:15px;color:var(--charcoal);">142</div>
+                <div style="font-size:9px;color:#aaa;margin-top:2px;">Deals</div>
+              </div>
+              <div style="text-align:center;padding:9px 4px;background:#F9FAFB;border-radius:8px;border:1px solid #F0F0F0;">
+                <div style="font-family:'DM Sans',sans-serif;font-weight:800;font-size:15px;color:var(--charcoal);">4.9</div>
+                <div style="font-size:9px;color:#aaa;margin-top:2px;">Rating</div>
+              </div>
+              <div style="text-align:center;padding:9px 4px;background:#F9FAFB;border-radius:8px;border:1px solid #F0F0F0;">
+                <div style="font-family:'DM Sans',sans-serif;font-weight:800;font-size:15px;color:var(--charcoal);">18</div>
+                <div style="font-size:9px;color:#aaa;margin-top:2px;">Active</div>
+              </div>
+              <div style="text-align:center;padding:9px 4px;background:#F9FAFB;border-radius:8px;border:1px solid #F0F0F0;">
+                <div style="font-family:'DM Sans',sans-serif;font-weight:800;font-size:15px;color:var(--charcoal);">98%</div>
+                <div style="font-size:9px;color:#aaa;margin-top:2px;">Response</div>
+              </div>
+            </div>
+
+            <!-- Section label + tab strip -->
+            <div style="display:flex;gap:0;border-bottom:1px solid #F0F0F0;margin-bottom:12px;">
+              <div style="font-size:11px;font-weight:600;color:var(--blue);padding:0 0 8px;border-bottom:2px solid var(--blue);margin-bottom:-1px;margin-right:18px;">Listings</div>
+              <div style="font-size:11px;font-weight:500;color:#bbb;padding:0 0 8px;margin-right:18px;">Reviews</div>
+              <div style="font-size:11px;font-weight:500;color:#bbb;padding:0 0 8px;">Activity</div>
+            </div>
+
+            <!-- Listing cards -->
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;gap:10px;padding:10px;border:1px solid #EFEFEF;border-radius:9px;align-items:center;">
+                <div style="width:48px;height:48px;border-radius:7px;background:linear-gradient(135deg,#C5DEF5,#92C4EB);flex-shrink:0;overflow:hidden;position:relative;">
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;">🏖️</div>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:600;color:var(--charcoal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Clifton 3BR Beachfront Villa</div>
+                  <div style="font-size:10px;color:#999;margin-top:2px;">R 7.2M · Clifton, Cape Town</div>
+                  <div style="display:flex;gap:8px;margin-top:4px;">
+                    <span style="font-size:9px;color:#888;">3 bed</span>
+                    <span style="font-size:9px;color:#ddd;">·</span>
+                    <span style="font-size:9px;color:#888;">2 bath</span>
+                    <span style="font-size:9px;color:#ddd;">·</span>
+                    <span style="font-size:9px;color:#888;">210 m²</span>
+                  </div>
+                </div>
+                <div style="flex-shrink:0;text-align:right;">
+                  <div style="font-size:9.5px;font-weight:600;color:var(--green);background:#EBF8EE;padding:3px 8px;border-radius:20px;">Active</div>
+                  <div style="font-size:9px;color:#bbb;margin-top:4px;">3d ago</div>
+                </div>
+              </div>
+
+              <div style="display:flex;gap:10px;padding:10px;border:1px solid #EFEFEF;border-radius:9px;align-items:center;">
+                <div style="width:48px;height:48px;border-radius:7px;background:linear-gradient(135deg,#FDF6E3,#F0D890);flex-shrink:0;overflow:hidden;position:relative;">
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;">🏢</div>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:600;color:var(--charcoal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Sea Point Penthouse</div>
+                  <div style="font-size:10px;color:#999;margin-top:2px;">R 4.5M · Sea Point, Cape Town</div>
+                  <div style="display:flex;gap:8px;margin-top:4px;">
+                    <span style="font-size:9px;color:#888;">2 bed</span>
+                    <span style="font-size:9px;color:#ddd;">·</span>
+                    <span style="font-size:9px;color:#888;">2 bath</span>
+                    <span style="font-size:9px;color:#ddd;">·</span>
+                    <span style="font-size:9px;color:#888;">145 m²</span>
+                  </div>
+                </div>
+                <div style="flex-shrink:0;text-align:right;">
+                  <div style="font-size:9.5px;font-weight:600;color:var(--green);background:#EBF8EE;padding:3px 8px;border-radius:20px;">Active</div>
+                  <div style="font-size:9px;color:#bbb;margin-top:4px;">1w ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FEATURE 3: Brands & Agencies ═══ -->
+<div class="bg-white-strip">
+  <div class="wrap">
+    <div class="feature-sec">
+      <div class="feature-grid">
+        <!-- Text -->
+        <div>
+          <div class="f-eyebrow">Brands &amp; Agencies</div>
+          <h2 class="f-heading">Find Agents Who Match Your Brand Perfectly</h2>
+          <p class="f-body">Whether you're a property brand, financial institution or home services company — Verastate helps you connect with agents whose market, niche and audience align with yours.</p>
+          <ul class="f-list">
+            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Filter agents by area, price range &amp; specialization</li>
+            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Direct partnership requests with verified agents</li>
+            <li><div class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#5d9c06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Agency directory with team profiles</li>
+          </ul>
+          <a href="#" class="f-link">Partner with agents →</a>
+        </div>
+        <!-- Visual: agent directory -->
+        <div>
+          <div class="ui-shell">
+            <div class="ui-topbar"><div class="dot d-r"></div><div class="dot d-y"></div><div class="dot d-g"></div></div>
+            <div class="ui-body">
+              <div style="font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;">Recommended Agents · Cape Town</div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="padding:13px;border:1px solid #EFEFEF;border-radius:9px;display:flex;align-items:center;gap:11px;">
+                  <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#0098f2,#004370);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;">JD</div>
+                  <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--charcoal);">Jordan Davies</div><div style="font-size:11px;color:#888;">Clifton · Luxury · 142 deals</div></div>
+                  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                    <div style="font-size:9px;font-weight:700;color:var(--green);background:#EBF8EE;padding:2px 7px;border-radius:20px;">98%</div>
+                    <div style="font-size:11px;background:var(--blue);color:#fff;padding:5px 11px;border-radius:6px;cursor:pointer;">Connect</div>
+                  </div>
+                </div>
+                <div style="padding:13px;border:1px solid #EFEFEF;border-radius:9px;display:flex;align-items:center;gap:11px;">
+                  <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#C9A52A,#E8C65A);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;">SA</div>
+                  <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--charcoal);">Sarah Ambrose</div><div style="font-size:11px;color:#888;">Sandton · Luxury · 89 deals</div></div>
+                  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                    <div style="font-size:9px;font-weight:700;color:var(--green);background:#EBF8EE;padding:2px 7px;border-radius:20px;">94%</div>
+                    <div style="font-size:11px;background:var(--blue);color:#fff;padding:5px 11px;border-radius:6px;cursor:pointer;">Connect</div>
+                  </div>
+                </div>
+                <div style="padding:13px;border:1px solid #EFEFEF;border-radius:9px;display:flex;align-items:center;gap:11px;">
+                  <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6B46C1,#9F7AEA);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;">TM</div>
+                  <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--charcoal);">Themba Mokoena</div><div style="font-size:11px;color:#888;">Soweto · Residential · 67 deals</div></div>
+                  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                    <div style="font-size:9px;font-weight:700;color:var(--green);background:#EBF8EE;padding:2px 7px;border-radius:20px;">91%</div>
+                    <div style="font-size:11px;background:var(--blue);color:#fff;padding:5px 11px;border-radius:6px;cursor:pointer;">Connect</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CTA ═══ -->
+<div style="border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold);">
+<div class="wrap cta-wrap">
+  <div class="cta-box">
+    <h2>Join the Network Built for Real Estate Professionals</h2>
+    <p>Enter your email and we'll notify you the moment your spot is ready.</p>
+    <form class="email-form" id="emailForm" onsubmit="handleEmailSubmit(event)">
+      <input class="email-input" id="emailInput" type="email" placeholder="Enter your email address" required autocomplete="email" />
+      <button class="email-btn" type="submit">Get Early Access</button>
+    </form>
+    <div class="email-success" id="emailSuccess">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="rgba(255,255,255,0.15)"/><path d="M6 10.5l2.5 2.5 5.5-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      You're on the list — we'll be in touch soon.
+    </div>
+    <p class="email-disclaimer">No spam. Unsubscribe anytime.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FAQ ═══ -->
+<div style="background:#fff;">
+<div class="faq-wrap">
+  <h2 class="faq-title">Frequently Asked Questions</h2>
+  <div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Is Verastate Free for Agents?<div class="faq-icon">+</div></button>
+      <div class="faq-a"><p>Yes. Creating and maintaining your agent profile on Verastate is completely free. We offer premium features for agents and agencies who want advanced analytics, priority discovery and enhanced brand partnerships.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How Is Verastate Different from Property Portals?<div class="faq-icon">+</div></button>
+      <div class="faq-a"><p>Property portals are for listing properties. Verastate is the professional network for the agents and professionals behind those listings. Think of it as LinkedIn, purpose-built for real estate.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">What Countries Does Verastate Operate In?<div class="faq-icon">+</div></button>
+      <div class="faq-a"><p>Verastate currently operates in South Africa and the United States, with plans to expand to further markets. Agents in supported markets can create verified profiles and access all platform features.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How Do Brands Connect with Agents?<div class="faq-icon">+</div></button>
+      <div class="faq-a"><p>Brands browse the agent directory and filter by area, specialization, price range and performance. When you find a match, send a direct partnership request through the platform.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">How Does Market Insights Work?<div class="faq-icon">+</div></button>
+      <div class="faq-a"><p>Market Insights aggregates transaction data, listing activity and price trends for every area we cover. Agents can explore live dashboards, compare suburbs and share reports directly with clients.</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-row">
+          <img src="brand_assets/Verastate_logo.png.png" alt="Verastate">
+          <span>Verastate</span>
+        </div>
+        <p class="footer-brand-desc">The professional network for real estate — connecting agents, brands and agencies across South Africa &amp; the United States.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <a href="#">For agents</a>
+        <a href="#">For brands</a>
+        <a href="#">Agencies</a>
+        <a href="#">Market insights</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="about.html">About</a>
+        <a href="resources.html">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <a href="#">Help center</a>
+        <a href="contact.html">Contact</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Verastate. All rights reserved.</p>
+      <p>South Africa · United States</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    btn.closest('.faq-item').classList.toggle('open');
+  }
+
+  async function handleHeroEmailSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById('heroEmailInput').value.trim();
+    const btn = e.target.querySelector('button');
+    btn.textContent = 'Joining...';
+    btn.disabled = true;
+
+    const { error } = await db.from('early_access').insert({ email, source: 'hero' });
+    if (error) console.error('early_access (hero):', error.message);
+
+    document.getElementById('heroEmailForm').classList.add('hidden');
+    document.getElementById('heroEmailSuccess').classList.add('visible');
+  }
+
+  async function handleEmailSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById('emailInput').value.trim();
+    const btn = e.target.querySelector('button');
+    btn.textContent = 'Joining...';
+    btn.disabled = true;
+
+    const { error } = await db.from('early_access').insert({ email, source: 'cta' });
+    if (error) console.error('early_access (cta):', error.message);
+
+    document.getElementById('emailForm').classList.add('hidden');
+    document.getElementById('emailSuccess').classList.add('visible');
+  }
+</script>
+</body>
+</html>

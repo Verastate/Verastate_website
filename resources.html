@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources — Verastate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #004370;
+      --blue-mid: #0060A8;
+      --blue-light: #0098f2;
+      --blue-subtle: #E8F4FD;
+      --gold: #C9A52A;
+      --gold-subtle: #FDF6E3;
+      --charcoal: #1C1F2E;
+      --muted: #666;
+      --border: #E8E8E8;
+      --bg: #FAFAFA;
+      --green: #5d9c06;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--charcoal); -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+    main { flex: 1; }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    .nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1.5px solid var(--gold); height: 52px; display: flex; align-items: center; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 24px; display: flex; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; margin-right: 32px; }
+    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-logo-text { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 16px; color: var(--charcoal); letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 2px; flex: 1; }
+    .nav-link { font-size: 14px; font-weight: 400; color: #444; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: background 0.15s, color 0.15s; }
+    .nav-link:hover, .nav-link.active { background: #F3F4F6; color: var(--charcoal); }
+    .nav-link.active { font-weight: 500; color: var(--blue); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-ghost-nav { font-size: 14px; font-weight: 500; color: var(--charcoal); text-decoration: none; padding: 7px 14px; border-radius: 6px; transition: background 0.15s; }
+    .btn-ghost-nav:hover { background: #F3F4F6; }
+    .btn-nav-primary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: #fff; background: var(--blue); text-decoration: none; padding: 7px 16px; border-radius: 6px; transition: background 0.15s, transform 0.1s; }
+    .btn-nav-primary:hover { background: #003360; transform: translateY(-1px); }
+
+    /* LAYOUT */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* PAGE HEADER */
+    .page-header { padding: 56px 0 40px; }
+    .page-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--blue-light); background: var(--blue-subtle); padding: 4px 12px; border-radius: 20px; margin-bottom: 18px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .page-header h1 { font-size: 44px; font-weight: 700; line-height: 1.08; letter-spacing: -0.035em; color: var(--charcoal); margin-bottom: 12px; max-width: 600px; }
+    .page-header p { font-size: 17px; line-height: 1.65; color: var(--muted); max-width: 500px; }
+
+    /* FILTER BAR */
+    .filter-bar { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fff; padding: 0; margin-bottom: 48px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .filter-inner { display: flex; gap: 0; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .filter-btn { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--muted); background: none; border: none; cursor: pointer; padding: 14px 20px; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; white-space: nowrap; margin-bottom: -1px; }
+    .filter-btn:hover { color: var(--charcoal); }
+    .filter-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+
+    /* CATEGORY BADGES */
+    .cat-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
+    .cat-blog { background: var(--blue-subtle); color: var(--blue-light); }
+    .cat-case-study { background: var(--gold-subtle); color: #A07A0A; }
+    .cat-whitepaper { background: rgba(28,31,46,0.07); color: var(--charcoal); }
+
+    /* FEATURED ARTICLE */
+    .featured-wrap { margin-bottom: 56px; }
+    .featured-card { border-radius: 20px; overflow: hidden; display: grid; grid-template-columns: 1fr 420px; min-height: 420px; background: var(--charcoal); box-shadow: 0 4px 8px rgba(0,0,0,0.06), 0 24px 56px rgba(0,0,0,0.12); transition: transform 0.25s, box-shadow 0.25s; cursor: pointer; }
+    .featured-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.08), 0 32px 72px rgba(0,0,0,0.16); }
+    .featured-img { position: relative; overflow: hidden; }
+    .featured-img img { width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(0.75); transition: transform 0.5s; }
+    .featured-card:hover .featured-img img { transform: scale(1.03); }
+    .featured-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 40%, var(--charcoal) 100%); }
+    .featured-content { padding: 44px 44px 44px 36px; display: flex; flex-direction: column; justify-content: center; }
+    .featured-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .featured-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+    .featured-content h2 { font-size: 28px; font-weight: 700; line-height: 1.2; letter-spacing: -0.025em; color: #fff; margin-bottom: 16px; }
+    .featured-excerpt { font-size: 15px; line-height: 1.65; color: rgba(255,255,255,0.55); margin-bottom: 28px; }
+    .featured-meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: rgba(255,255,255,0.35); margin-bottom: 28px; }
+    .featured-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+    .btn-read { display: inline-flex; align-items: center; gap: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--charcoal); background: #fff; padding: 10px 20px; border-radius: 8px; transition: background 0.15s, transform 0.1s; width: fit-content; }
+    .btn-read:hover { background: #F0F0F0; transform: translateX(2px); }
+    .btn-read svg { transition: transform 0.2s; }
+    .btn-read:hover svg { transform: translateX(3px); }
+
+    /* ARTICLES GRID */
+    .articles-section { margin-bottom: 80px; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 24px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+
+    .article-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s; cursor: pointer; }
+    .article-card:hover { transform: translateY(-4px); box-shadow: 0 4px 8px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.09); border-color: #D8D8D8; }
+    .article-img { position: relative; overflow: hidden; aspect-ratio: 16/9; background: #F0F4F8; }
+    .article-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .article-card:hover .article-img img { transform: scale(1.04); }
+    .article-img-badge { position: absolute; top: 14px; left: 14px; }
+    .article-body { padding: 22px 24px 24px; display: flex; flex-direction: column; flex: 1; }
+    .article-title { font-size: 17px; font-weight: 700; line-height: 1.35; letter-spacing: -0.018em; color: var(--charcoal); margin-bottom: 10px; }
+    .article-excerpt { font-size: 14px; line-height: 1.65; color: var(--muted); margin-bottom: 20px; flex: 1; }
+    .article-meta { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #aaa; padding-top: 16px; border-top: 1px solid #F0F0F0; }
+    .article-meta-left { display: flex; align-items: center; gap: 10px; }
+    .article-read-link { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--blue-light); transition: gap 0.15s; }
+    .article-card:hover .article-read-link { gap: 8px; }
+
+    /* HIDDEN STATE */
+    /* COMING SOON */
+    .coming-soon-block { text-align: center; padding: 96px 24px 80px; max-width: 480px; margin: 0 auto; }
+    .coming-soon-icon { width: 56px; height: 56px; background: var(--blue-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: var(--blue-light); }
+    .coming-soon-block h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.025em; color: var(--charcoal); margin-bottom: 12px; }
+    .coming-soon-block p { font-size: 16px; line-height: 1.7; color: var(--muted); margin-bottom: 28px; }
+    .btn-coming-soon { display: inline-block; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; color: #fff; background: var(--blue); padding: 12px 24px; border-radius: 10px; transition: background 0.15s, transform 0.1s; }
+    .btn-coming-soon:hover { background: #003360; transform: translateY(-1px); }
+
+    /* CTA STRIP */
+    .cta-strip { border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); background: #fff; padding: 48px 0; margin-bottom: 0; }
+    .cta-strip-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+    .cta-strip h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--charcoal); margin-bottom: 6px; }
+    .cta-strip p { font-size: 15px; color: var(--muted); }
+    .btn-primary-cta { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; color: #fff; background: var(--blue); padding: 12px 24px; border-radius: 10px; white-space: nowrap; transition: background 0.15s, transform 0.1s; display: inline-block; }
+    .btn-primary-cta:hover { background: #003360; transform: translateY(-1px); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .fu { animation: fadeUp 0.55s ease both; }
+    .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; } .d3 { animation-delay: 0.24s; }
+
+    /* FOOTER */
+    footer { background: var(--charcoal); padding: 48px 0 32px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr repeat(4,1fr); gap: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .footer-brand-desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.7; margin-top: 12px; max-width: 240px; }
+    .footer-logo-row { display: flex; align-items: center; gap: 8px; }
+    .footer-logo-row img { width: 24px; height: 24px; border-radius: 5px; }
+    .footer-logo-row span { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 14px; color: #fff; }
+    .footer-col h5 { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 14px; }
+    .footer-col a { display: block; font-size: 14px; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; transition: color 0.15s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { padding-top: 24px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.28); }
+
+    @media (max-width: 960px) {
+      .featured-card { grid-template-columns: 1fr; min-height: auto; }
+      .featured-img { height: 260px; }
+      .featured-img::after { background: linear-gradient(180deg, transparent 30%, var(--charcoal) 100%); }
+      .featured-content { padding: 28px 28px 32px; }
+      .featured-content h2 { font-size: 22px; }
+      .articles-grid { grid-template-columns: repeat(2, 1fr); }
+      .cta-strip-inner { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 640px) {
+      .page-header h1 { font-size: 32px; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .filter-btn { padding: 14px 14px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="brand_assets/Verastate_logo.png.png" alt="Verastate">
+      <span class="nav-logo-text">Verastate</span>
+    </a>
+    <div class="nav-links">
+      <a href="resources.html" class="nav-link active">Resources</a>
+      <a href="about.html" class="nav-link">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="signup.html" class="btn-ghost-nav">Sign up</a>
+      <a href="contact.html" class="btn-nav-primary">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- PAGE HEADER -->
+  <div class="wrap">
+    <div class="page-header">
+      <div class="page-badge fu">
+        <svg width="7" height="7" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Resources
+      </div>
+      <h1 class="fu d1">Insights for real estate professionals</h1>
+      <p class="fu d2">Guides, market research, and stories from the world of modern real estate.</p>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-inner">
+      <button class="filter-btn active" data-filter="all" onclick="filterArticles('all')">All</button>
+      <button class="filter-btn" data-filter="blog" onclick="filterArticles('blog')">Blog</button>
+      <button class="filter-btn" data-filter="case-study" onclick="filterArticles('case-study')">Case Studies</button>
+      <button class="filter-btn" data-filter="whitepaper" onclick="filterArticles('whitepaper')">Whitepapers</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- COMING SOON -->
+    <div class="coming-soon-block fu d3">
+      <div class="coming-soon-icon">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M14 3v4M14 21v4M3 14h4M21 14h4M6.22 6.22l2.83 2.83M18.95 18.95l2.83 2.83M18.95 9.05l2.83-2.83M6.22 21.78l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>Content coming soon</h2>
+      <p>We're working on our first blogs, case studies, and whitepapers. Sign up to be notified the moment we publish.</p>
+      <a href="signup.html" class="btn-coming-soon">Get notified →</a>
+    </div>
+
+  </div><!-- /wrap -->
+
+  <!-- CTA STRIP -->
+  <div class="cta-strip">
+    <div class="wrap">
+      <div class="cta-strip-inner">
+        <div>
+          <h3>Get these insights in your inbox</h3>
+          <p>New articles, market reports and case studies — delivered to early access members first.</p>
+        </div>
+        <a href="signup.html" class="btn-primary-cta">Reserve your spot →</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-row">
+          <img src="brand_assets/Verastate_logo.png.png" alt="Verastate">
+          <span>Verastate</span>
+        </div>
+        <p class="footer-brand-desc">The professional network for real estate — connecting agents, brands and agencies across South Africa &amp; the United States.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <a href="#">For agents</a>
+        <a href="#">For brands</a>
+        <a href="#">Agencies</a>
+        <a href="#">Market insights</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="resources.html">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <a href="#">Help center</a>
+        <a href="contact.html">Contact</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Verastate. All rights reserved.</p>
+      <p>South Africa · United States</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function filterArticles(category) {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === category);
+    });
+  }
+</script>
+</body>
+</html>

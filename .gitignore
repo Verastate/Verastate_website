@@ -1,0 +1,13 @@
+# Supabase config — generated at build time from env vars
+supabase-config.js
+
+# Dev tooling
+node_modules/
+serve.mjs
+screenshot.mjs
+
+# Screenshots (working files only)
+temporary screenshots/
+
+# Claude Code internal
+.claude/

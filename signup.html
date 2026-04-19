@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Verastate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <script src="supabase-config.js"></script>
+  <style>
+    :root {
+      --blue: #004370;
+      --blue-mid: #0060A8;
+      --blue-light: #0098f2;
+      --blue-subtle: #E8F4FD;
+      --gold: #C9A52A;
+      --charcoal: #1C1F2E;
+      --muted: #666;
+      --border: #E8E8E8;
+      --bg: #FAFAFA;
+      --green: #5d9c06;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--charcoal); -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+    main { flex: 1; }
+
+    /* NAV */
+    .nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1.5px solid var(--gold); height: 52px; display: flex; align-items: center; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 24px; display: flex; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; margin-right: 32px; }
+    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-logo-text { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 16px; color: var(--charcoal); letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 2px; flex: 1; }
+    .nav-link { font-size: 14px; font-weight: 400; color: #444; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: background 0.15s, color 0.15s; }
+    .nav-link:hover { background: #F3F4F6; color: var(--charcoal); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-ghost-nav { font-size: 14px; font-weight: 500; color: var(--charcoal); text-decoration: none; padding: 7px 14px; border-radius: 6px; transition: background 0.15s; }
+    .btn-ghost-nav:hover { background: #F3F4F6; }
+    .btn-nav-primary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: #fff; background: var(--blue); text-decoration: none; padding: 7px 16px; border-radius: 6px; transition: background 0.15s, transform 0.1s; }
+    .btn-nav-primary:hover { background: #003360; transform: translateY(-1px); }
+
+    /* LAYOUT */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* PAGE HEADER */
+    .page-header { padding: 60px 0 36px; text-align: center; }
+    .page-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--blue-light); background: var(--blue-subtle); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .page-header h1 { font-size: 42px; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; color: var(--charcoal); margin-bottom: 14px; }
+    .page-header p { font-size: 16px; line-height: 1.7; color: var(--muted); max-width: 460px; margin: 0 auto; }
+
+    /* FORM */
+    .signup-section { padding: 0 0 80px; }
+    .form-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.07); padding: 36px 40px; max-width: 520px; margin: 0 auto; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--charcoal); margin-bottom: 7px; }
+    .optional { color: #b0b0b0; font-weight: 400; }
+    .form-input, .form-select { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--charcoal); background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 16px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; appearance: none; -webkit-appearance: none; }
+    .form-input::placeholder { color: #bbb; }
+    .form-input:focus, .form-select:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(0,96,168,0.1); }
+    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+    .form-select option[value=""][disabled] { color: #bbb; }
+
+    .btn-submit { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; color: #fff; background: var(--blue); border: none; border-radius: 10px; padding: 14px 24px; cursor: pointer; transition: background 0.15s, transform 0.1s; margin-top: 4px; }
+    .btn-submit:hover { background: #003360; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+    .form-disclaimer { font-size: 12px; color: #bbb; text-align: center; margin-top: 14px; line-height: 1.5; }
+
+    /* STATES */
+    .field-error { font-size: 12px; color: #c0392b; margin-top: 6px; display: none; }
+    .field-error.visible { display: block; }
+    .form-error-banner { background: #FFF5F5; border: 1px solid #FED7D7; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #c0392b; margin-bottom: 20px; display: none; }
+    .form-error-banner.visible { display: block; }
+
+    .form-body.hidden { display: none; }
+    .success-card { display: none; text-align: center; padding: 48px 24px; }
+    .success-card.visible { display: block; }
+    .success-icon { width: 60px; height: 60px; background: #EBF8EE; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .success-icon svg { color: var(--green); }
+    .success-card h2 { font-size: 24px; font-weight: 700; color: var(--charcoal); margin-bottom: 10px; letter-spacing: -0.02em; }
+    .success-card p { font-size: 15px; color: var(--muted); line-height: 1.65; max-width: 340px; margin: 0 auto; }
+    .success-back { display: inline-block; margin-top: 24px; font-size: 14px; color: var(--blue-light); text-decoration: none; }
+    .success-back:hover { text-decoration: underline; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .fu { animation: fadeUp 0.55s ease both; }
+    .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; } .d3 { animation-delay: 0.24s; }
+
+    /* FOOTER */
+    footer { background: var(--charcoal); padding: 48px 0 32px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr repeat(4,1fr); gap: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .footer-brand-desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.7; margin-top: 12px; max-width: 240px; }
+    .footer-logo-row { display: flex; align-items: center; gap: 8px; }
+    .footer-logo-row img { width: 24px; height: 24px; border-radius: 5px; }
+    .footer-logo-row span { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 14px; color: #fff; }
+    .footer-col h5 { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 14px; }
+    .footer-col a { display: block; font-size: 14px; color: rgba(255,255,255,0.6); text-decoration: none; margin-bottom: 10px; transition: color 0.15s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { padding-top: 24px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.28); }
+
+    @media (max-width: 600px) {
+      .form-card { padding: 24px 20px; border-radius: 12px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .page-header h1 { font-size: 32px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="brand_assets/Verastate_logo.png.png" alt="Verastate">
+      <span class="nav-logo-text">Verastate</span>
+    </a>
+    <div class="nav-links">
+      <a href="resources.html" class="nav-link">Resources</a>
+      <a href="about.html" class="nav-link">About</a>
+    </div>
+    <div class="nav-actions">
+      <a href="signup.html" class="btn-ghost-nav" style="color:var(--blue);font-weight:600;">Sign up</a>
+      <a href="contact.html" class="btn-nav-primary">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <div class="page-header">
+      <div class="page-badge fu">
+        <svg width="7" height="7" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Early Access
+      </div>
+      <h1 class="fu d1">Be part of the first wave</h1>
+      <p class="fu d2">Reserve your spot before we go live. We'll notify you the moment your account is ready — no spam, ever.</p>
+    </div>
+  </div>
+
+  <div class="wrap signup-section">
+    <div class="form-card fu d3">
+
+      <div class="success-card" id="successCard">
+        <div class="success-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M7 14.5l4.5 4.5 9.5-9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>You're on the list!</h2>
+        <p>Thanks for signing up. You'll be among the first to know when Verastate launches. We'll be in touch soon.</p>
+        <a href="index.html" class="success-back">← Back to home</a>
+      </div>
+
+      <div class="form-body" id="formBody">
+        <div class="form-error-banner" id="errorBanner">Something went wrong. Please try again.</div>
+
+        <form id="signupForm" onsubmit="handleSignupSubmit(event)" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First name</label>
+              <input class="form-input" id="firstName" type="text" placeholder="Jane" required autocomplete="given-name">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last name</label>
+              <input class="form-input" id="lastName" type="text" placeholder="Smith" required autocomplete="family-name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupEmail">Email address</label>
+            <input class="form-input" id="signupEmail" type="email" placeholder="jane@agency.com" required autocomplete="email">
+            <div class="field-error" id="emailError">This email is already on the list — you're all set!</div>
+          </div>
+
+          <div class="form-group">
+            <label for="role">I am a...</label>
+            <select class="form-select" id="role" required>
+              <option value="" disabled selected>Select your role</option>
+              <option value="agent">Real Estate Agent</option>
+              <option value="brand_agency">Brand / Agency</option>
+              <option value="investor">Property Investor</option>
+              <option value="buyer_seller">Buyer / Seller</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="company">Company <span class="optional">(optional)</span></label>
+              <input class="form-input" id="company" type="text" placeholder="Agency name" autocomplete="organization">
+            </div>
+            <div class="form-group">
+              <label for="country">Country <span class="optional">(optional)</span></label>
+              <select class="form-select" id="country">
+                <option value="">Select country</option>
+                <option value="south_africa">South Africa</option>
+                <option value="united_states">United States</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn-submit" type="submit" id="submitBtn">Reserve My Spot</button>
+          <p class="form-disclaimer">No spam. We'll only contact you about your account and the launch date.</p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-row">
+          <img src="brand_assets/Verastate_logo.png.png" alt="Verastate">
+          <span>Verastate</span>
+        </div>
+        <p class="footer-brand-desc">The professional network for real estate — connecting agents, brands and agencies across South Africa &amp; the United States.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <a href="#">For agents</a>
+        <a href="#">For brands</a>
+        <a href="#">Agencies</a>
+        <a href="#">Market insights</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="resources.html">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <a href="#">Help center</a>
+        <a href="contact.html">Contact</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Verastate. All rights reserved.</p>
+      <p>South Africa · United States</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  async function handleSignupSubmit(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('submitBtn');
+    const emailError = document.getElementById('emailError');
+    const errorBanner = document.getElementById('errorBanner');
+    emailError.classList.remove('visible');
+    errorBanner.classList.remove('visible');
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const role = document.getElementById('role').value;
+    const company = document.getElementById('company').value.trim() || null;
+    const country = document.getElementById('country').value || null;
+
+    if (!firstName || !lastName || !email || !role) return;
+
+    btn.textContent = 'Reserving your spot...';
+    btn.disabled = true;
+
+    const { error } = await db.from('waitlist').insert({
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      role,
+      company,
+      country
+    });
+
+    if (error) {
+      if (error.code === '23505') {
+        emailError.classList.add('visible');
+      } else {
+        console.error('Signup error:', error.message);
+        errorBanner.classList.add('visible');
+      }
+      btn.textContent = 'Reserve My Spot';
+      btn.disabled = false;
+      return;
+    }
+
+    document.getElementById('formBody').classList.add('hidden');
+    document.getElementById('successCard').classList.add('visible');
+  }
+</script>
+</body>
+</html>
