@@ -669,7 +669,12 @@
     btn.disabled = true;
 
     const { error } = await db.from('early_access').insert({ email, source: 'hero' });
-    if (error) console.error('early_access (hero):', error.message);
+    if (error) {
+      console.error('[Supabase early_access insert error]', error.code, error.message, error.details, error.hint);
+      btn.textContent = 'Try again';
+      btn.disabled = false;
+      return;
+    }
 
     document.getElementById('heroEmailForm').classList.add('hidden');
     document.getElementById('heroEmailSuccess').classList.add('visible');
@@ -683,7 +688,12 @@
     btn.disabled = true;
 
     const { error } = await db.from('early_access').insert({ email, source: 'cta' });
-    if (error) console.error('early_access (cta):', error.message);
+    if (error) {
+      console.error('[Supabase early_access insert error]', error.code, error.message, error.details, error.hint);
+      btn.textContent = 'Try again';
+      btn.disabled = false;
+      return;
+    }
 
     document.getElementById('emailForm').classList.add('hidden');
     document.getElementById('emailSuccess').classList.add('visible');
