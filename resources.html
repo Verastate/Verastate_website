@@ -6,6 +6,14 @@
   <title>Real Estate Insights & Guides | Verastate Resources</title>
   <meta name="description" content="Real estate insights, guides, and market news from Verastate. Stay informed with the latest trends in South African and US property markets.">
   <meta name="robots" content="index, follow">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN1T0LVZXM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SN1T0LVZXM');
+  </script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -22,6 +30,28 @@
   <meta name="twitter:title" content="Real Estate Insights & Guides | Verastate Resources">
   <meta name="twitter:description" content="Real estate insights, guides, and market news from Verastate.">
   <meta name="twitter:image" content="https://verastate.co.za/brand_assets/verastate_banner.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Real Estate Insights & Guides | Verastate Resources",
+    "description": "Real estate insights, guides, and market news from Verastate. Stay informed with the latest trends in South African and US property markets.",
+    "url": "https://verastate.co.za/resources.html",
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://verastate.co.za/#organization",
+      "name": "Verastate",
+      "url": "https://verastate.co.za"
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://verastate.co.za/" },
+        { "@type": "ListItem", "position": 2, "name": "Resources", "item": "https://verastate.co.za/resources.html" }
+      ]
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
@@ -267,13 +297,11 @@
       <div class="footer-col">
         <h5>Company</h5>
         <a href="about.html">About</a>
-        <a href="resources.html">Blog</a>
       </div>
       <div class="footer-col">
         <h5>Support</h5>
         <a href="contact.html">Help center</a>
         <a href="contact.html">Contact</a>
-        <a href="about.html">Status</a>
       </div>
       <div class="footer-col">
         <h5>Legal</h5>
@@ -283,7 +311,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 Verastate. All rights reserved.</p>
+      <p>© 2026 Verastate. All rights reserved.</p>
       <p>South Africa · United States</p>
     </div>
   </div>
@@ -295,6 +323,16 @@
       btn.classList.toggle('active', btn.dataset.filter === category);
     });
   }
+</script>
+
+<!-- Cookie consent banner -->
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1C1F2E;border-top:2px solid #C9A52A;padding:12px 24px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+  <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.75);margin:0;line-height:1.5;flex:1;min-width:200px;">We use cookies to improve your experience and analyse site traffic. By continuing, you agree to our <a href="legal.html#privacy" style="color:#C9A52A;text-decoration:underline;">Cookie Policy</a>.</p>
+  <button onclick="dismissCookieBanner()" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#1C1F2E;background:#C9A52A;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;white-space:nowrap;">Got it</button>
+</div>
+<script>
+  (function() { if (!localStorage.getItem('cookieConsent')) document.getElementById('cookieBanner').style.display = 'flex'; })();
+  function dismissCookieBanner() { localStorage.setItem('cookieConsent', '1'); document.getElementById('cookieBanner').style.display = 'none'; }
 </script>
 </body>
 </html>

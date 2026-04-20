@@ -6,6 +6,14 @@
   <title>Contact Verastate | Get in Touch with Our Team</title>
   <meta name="description" content="Get in touch with the Verastate team. We'd love to hear from real estate agents, agencies, and buyers looking to join the platform.">
   <meta name="robots" content="index, follow">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SN1T0LVZXM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SN1T0LVZXM');
+  </script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -182,7 +190,7 @@
     </div>
     <div class="nav-actions">
       <a href="signup.html" class="btn-ghost-nav">Sign up</a>
-      <a href="contact.html" class="btn-nav-primary" style="background:var(--gold);color:#fff;">Contact Us</a>
+      <a href="contact.html" class="btn-nav-primary">Contact Us</a>
     </div>
   </div>
 </nav>
@@ -215,7 +223,7 @@
           <div>
             <div class="contact-item-label">Email</div>
             <!-- Replace with your actual email address -->
-            <a href="mailto:admin@verastate.co.za" class="contact-item-value">hello@verastate.com</a>
+            <a href="mailto:admin@verastate.co.za" class="contact-item-value">admin@verastate.co.za</a>
           </div>
         </div>
 
@@ -236,12 +244,12 @@
 
         <div class="socials-label">Follow us</div>
         <div class="socials-row">
-          <a href="https://www.linkedin.com/company/verastate/" class="social-btn" title="LinkedIn" target="_blank" rel="noopener">
+          <a href="https://www.linkedin.com/company/verastate/" class="social-btn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
             </svg>
           </a>
-          <a href="https://x.com/Verastate_Net" class="social-btn" title="X / Twitter" target="_blank" rel="noopener">
+          <a href="https://x.com/Verastate_Net" class="social-btn" title="X / Twitter" target="_blank" rel="noopener noreferrer">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
             </svg>
@@ -324,13 +332,11 @@
       <div class="footer-col">
         <h5>Company</h5>
         <a href="about.html">About</a>
-        <a href="resources.html">Blog</a>
       </div>
       <div class="footer-col">
         <h5>Support</h5>
         <a href="contact.html">Help center</a>
         <a href="contact.html">Contact</a>
-        <a href="about.html">Status</a>
       </div>
       <div class="footer-col">
         <h5>Legal</h5>
@@ -340,7 +346,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 Verastate. All rights reserved.</p>
+      <p>© 2026 Verastate. All rights reserved.</p>
       <p>South Africa · United States</p>
     </div>
   </div>
@@ -367,7 +373,6 @@
     const { error } = await db.from('contact_submissions').insert({ name, email, subject, message });
 
     if (error) {
-      console.error('Contact form error:', error.message);
       errorBanner.classList.add('visible');
       btn.textContent = 'Send Message';
       btn.disabled = false;
@@ -377,6 +382,16 @@
     document.getElementById('formBody').classList.add('hidden');
     document.getElementById('successCard').classList.add('visible');
   }
+</script>
+
+<!-- Cookie consent banner -->
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1C1F2E;border-top:2px solid #C9A52A;padding:12px 24px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+  <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.75);margin:0;line-height:1.5;flex:1;min-width:200px;">We use cookies to improve your experience and analyse site traffic. By continuing, you agree to our <a href="legal.html#privacy" style="color:#C9A52A;text-decoration:underline;">Cookie Policy</a>.</p>
+  <button onclick="dismissCookieBanner()" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#1C1F2E;background:#C9A52A;border:none;border-radius:6px;padding:8px 18px;cursor:pointer;white-space:nowrap;">Got it</button>
+</div>
+<script>
+  (function() { if (!localStorage.getItem('cookieConsent')) document.getElementById('cookieBanner').style.display = 'flex'; })();
+  function dismissCookieBanner() { localStorage.setItem('cookieConsent', '1'); document.getElementById('cookieBanner').style.display = 'none'; }
 </script>
 </body>
 </html>
