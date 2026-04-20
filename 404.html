@@ -64,7 +64,6 @@
     .error-wrap { animation: fadeUp 0.5s ease both; }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
-  <script type="module">import { injectSpeedInsights } from 'https://cdn.jsdelivr.net/npm/@vercel/speed-insights/dist/index.js'; injectSpeedInsights();</script>
 </head>
 <body>
 
@@ -112,5 +111,7 @@
   (function() { if (!localStorage.getItem('cookieConsent')) document.getElementById('cookieBanner').style.display = 'flex'; })();
   function dismissCookieBanner() { localStorage.setItem('cookieConsent', '1'); document.getElementById('cookieBanner').style.display = 'none'; }
 </script>
+  <script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>
